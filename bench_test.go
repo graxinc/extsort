@@ -3,7 +3,7 @@ package extsort_test
 import (
 	"testing"
 
-	"github.com/bsm/extsort"
+	"github.com/graxinc/extsort"
 )
 
 func BenchmarkSorter(b *testing.B) {

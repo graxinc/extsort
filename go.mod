@@ -1,4 +1,4 @@
-module github.com/bsm/extsort
+module github.com/graxinc/extsort
 
 go 1.23
 

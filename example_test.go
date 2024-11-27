@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/bsm/extsort"
+	"github.com/graxinc/extsort"
 )
 
 func Example_map() {

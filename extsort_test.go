@@ -12,7 +12,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/bsm/extsort"
+	"github.com/graxinc/extsort"
 
 	. "github.com/bsm/ginkgo/v2"
 	. "github.com/bsm/gomega"

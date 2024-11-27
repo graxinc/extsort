@@ -1,13 +1,11 @@
 package extsort
 
-import (
-	"github.com/valyala/bytebufferpool"
-)
+import "github.com/graxinc/bytepool"
 
-var entryPool bytebufferpool.Pool
+var entryPool = bytepool.NewDynamic()
 
 type entry struct {
-	data   *bytebufferpool.ByteBuffer
+	data   *bytepool.Bytes
 	keyLen int
 }
 

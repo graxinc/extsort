@@ -5,6 +5,8 @@ import (
 	"encoding/binary"
 	"io"
 	"os"
+
+	"github.com/graxinc/bytepool"
 )
 
 type tempWriter struct {
@@ -153,7 +155,7 @@ func (t *tempReader) ReadNext(section int) (*entry, error) {
 	ent.keyLen = int(ku)
 	t.limitedReader.R = r
 	t.limitedReader.N = int64(ku + vu)
-	if _, err := ent.data.ReadFrom(&t.limitedReader); err != nil {
+	if err := readAllBuf(&t.limitedReader, ent.data); err != nil {
 		ent.Release()
 		return nil, err
 	}
@@ -167,4 +169,36 @@ func (t *tempReader) Close() (err error) {
 		}
 	}
 	return
+}
+
+// Verbatim io.ReadAll but reads into b.
+func readAllBuf(r io.Reader, b *bytepool.Bytes) error {
+	bb, err := readAll(r, b.B)
+	if err != nil {
+		return err
+	}
+	b.B = bb
+	return nil
+}
+
+// Verbatim io.ReadAll with buffer passed in.
+func readAll(r io.Reader, b []byte) ([]byte, error) {
+	// io.go:626
+
+	// b := make([]byte, 0, 512)
+	b = b[:0]
+	for {
+		if len(b) == cap(b) {
+			// Add more capacity (let append pick how much).
+			b = append(b, 0)[:len(b)]
+		}
+		n, err := r.Read(b[len(b):cap(b)])
+		b = b[:len(b)+n]
+		if err != nil {
+			if err == io.EOF {
+				err = nil
+			}
+			return b, err
+		}
+	}
 }
